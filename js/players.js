@@ -70,7 +70,6 @@ function mousePressed() {
     if (getCurrentPlayer() != null && getCurrentPlayer().type == "human") {
         let j = floor(mouseX / h);
         let i = floor(mouseY / h);
-        print(i + " " + j);
         if (gameBoard[i][j] == playerSign.N) {
             gameBoard[i][j] = getCurrentPlayer().sign;
             computeNextPlayer();

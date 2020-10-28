@@ -18,12 +18,12 @@ let player1 = {
     sign : playerSign.X,
 };
 
-let player3 = {
+let player2 = {
     type : "human",
     sign : playerSign.O,
 };
 
-let player2 = {
+let player3 = {
     type : "bot",
     sign : playerSign.O,
     play : function() {
