@@ -39,10 +39,12 @@ function setup() {
     createCanvas(400, 400);
     w = width/3;
     h = height/3; 
+    if (getCurrentPlayer().type == "bot")
+        getCurrentPlayer().play();
 }
   
 function draw() {
-    background('yellow');
+    background(170);
     stroke('green');
     strokeWeight(6);
     for(let i = 0; i<4; i++) {
@@ -58,35 +60,64 @@ function draw() {
             drawPlayerSign(gameBoard[j][i], x, y);
         }
     }
-    //currentPlayer = getNextPlayer();
-    //play(currentPlayer);
-    searchWinner();
+    result = searchWinner(graphicMode = true);
+
+    if (result != null)  {
+        noLoop();
+        let resultP = createP('');
+        resultP.style('font-size', '12pt');
+        if (result == playerSign.T) {
+            resultP.html(`Party ${partyNumber} : Tie!`);
+        } else {
+            resultP.html(`Party ${partyNumber} : ${result} wins!`);
+        }  
+    }
+    
 }
 
 function tripleEquality(a, b, c) {
-    return (a == b && b == c);
+    return (a == b && b == c && a != playerSign.N);
 }
 
-function searchWinner() {
+function searchWinner(graphicMode) {
+    let winner = null;
     for (let i = 0; i < 3; i++) {
         if (tripleEquality(gameBoard[i][0], gameBoard[i][1], gameBoard[i][2])) {
-            drawWinnerLine(i, 'h');    
-            return gameBoard[i][0];      
+            if (graphicMode)
+                drawWinnerLine(i, 'h');    
+            winner = gameBoard[i][0];      
         }
         if (tripleEquality(gameBoard[0][i], gameBoard[1][i], gameBoard[2][i])) {
-            drawWinnerLine(i, 'v');
-            return gameBoard[0][i];
+            if (graphicMode)
+                drawWinnerLine(i, 'v');
+            winner = gameBoard[0][i];
         }
     }
 
     if (tripleEquality(gameBoard[0][0], gameBoard[1][1], gameBoard[2][2])) {
-        drawWinnerLine(0, 'd');
-        return gameBoard[0][0];
+        if (graphicMode)
+            drawWinnerLine(0, 'd');
+        winner = gameBoard[0][0];
     }
 
     if (tripleEquality(gameBoard[0][2], gameBoard[1][1], gameBoard[2][0])) {
-        drawWinnerLine(2, 'd');
-        return gameBoard[0][2];
+        if (graphicMode)
+            drawWinnerLine(2, 'd');
+        winner = gameBoard[0][2];
     }
 
+    let emptySpots = 0;
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (gameBoard[i][j] == playerSign.N) {
+                emptySpots++;
+            }
+        }
+    }
+
+    if (winner == null && emptySpots == 0) {
+        return playerSign.T;
+    } else {
+        return winner;
+    }
 }
